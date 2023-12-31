@@ -25,6 +25,10 @@ class GithubServiceOptions : IRetrofitOptions {
         }.build()
     }
 
+    override fun getBaseUrl(): String? {
+        return null
+    }
+
     override fun getCallAdapterFactory(): CallAdapter.Factory? {
         return RxJava2CallAdapterFactory.create()
     }
