@@ -12,6 +12,11 @@ interface IRetrofitOptions {
     fun getHttpClient(): OkHttpClient
 
     /**
+     * 获得BaseUrl
+     */
+    fun getBaseUrl(): String?
+
+    /**
      * 获得CallAdapter工厂类
      */
     fun getCallAdapterFactory(): CallAdapter.Factory?
