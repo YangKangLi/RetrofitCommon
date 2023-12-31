@@ -1,5 +1,6 @@
 package com.github.yangkl.lib.retrofit_common
 
+import android.text.TextUtils
 import android.util.Log
 import retrofit2.Retrofit
 import java.util.*
@@ -19,7 +20,7 @@ class RetrofitMap {
      * 创建或者获取Service
      */
     fun <T> createService(clazz: Class<T>, options: IRetrofitOptions): T? {
-        val baseUrl = getBaseUrl(clazz)
+        val baseUrl = getBaseUrl(clazz, options)
         val retrofit = createRetrofit(baseUrl, options)
         Log.d("YangKL", "retrofit = ${retrofit.toString()}")
         return retrofit?.create(clazz)
@@ -28,14 +29,19 @@ class RetrofitMap {
     /**
      * 获取BaseUrl
      */
-    private fun <T> getBaseUrl(clazz: Class<T>): String {
-        Objects.requireNonNull(clazz, "RetrofitMap -> getBaseUrl: clazz is null")
-        if (clazz.isAnnotationPresent(BaseUrl::class.java)) {
-            val baseUrl = clazz.getAnnotation(BaseUrl::class.java)?.base_url
-            Objects.requireNonNull(baseUrl, "RetrofitMap -> getBaseUrl: base_url is null")
+    private fun <T> getBaseUrl(clazz: Class<T>, options: IRetrofitOptions): String {
+        var baseUrl = options.getBaseUrl()
+        if (!TextUtils.isEmpty(baseUrl)) {
             return baseUrl!!
         } else {
-            throw RuntimeException("RetrofitMap -> getBaseUrl: clazz should use BaseUrl Annotation")
+            Objects.requireNonNull(clazz, "RetrofitMap -> getBaseUrl: clazz is null")
+            if (clazz.isAnnotationPresent(BaseUrl::class.java)) {
+                baseUrl = clazz.getAnnotation(BaseUrl::class.java)?.base_url
+                Objects.requireNonNull(baseUrl, "RetrofitMap -> getBaseUrl: base_url is null")
+                return baseUrl!!
+            } else {
+                throw RuntimeException("RetrofitMap -> getBaseUrl: clazz should use BaseUrl Annotation")
+            }
         }
     }
 
